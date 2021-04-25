@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #div1 {
+            margin: auto;
+            width: 1200px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        #div1 div {
+            width: 240px;
+        }
+
+        #div1 div p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div1">
+
+    </div>
+    <script>
+        const xhr = new XMLHttpRequest()
+        xhr.open("get", "http://musicapi.leanapp.cn/personalized?limit=10", true)
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status = 200) {
+                    let res = JSON.parse(xhr.responseText)
+                    console.log(res.result[0].picUrl);
+                    for (let i = 0; i <= res.result.length - 1; i++) {
+                        let d1 = document.getElementById('div1');
+                        let myname = res.result[i].name;
+                        let src = res.result[i].picUrl;
+                        d1.innerHTML += `<div><img src="${src}" alt="" style="width: 200px;padding: 20px;">
+            <p>${myname}</p>
+        </div>`
+                    }
+                }
+            }
+        };
+        xhr.send()
+    </script>
+
+    
+</body>
+
+</html>

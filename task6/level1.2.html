@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #div1 {
+            margin: auto;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 1200px;
+        }
+
+        form {
+            display: inline;
+        }
+
+        #div1 div {
+            width: 1200px;
+        }
+
+        #div1 div input {
+            width: 1000px;
+            height: 30px;
+        }
+
+        button {
+            width: 180px;
+            height: 34px;
+        }
+
+        tr {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="div1">
+        <div>
+            <form id="form1">
+                <input id="name" type="text" placeholder="请输入你的姓名" />
+            </form>
+            <button onclick="btn()">搜索</button>
+        </div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="600px">音乐标题</th>
+                        <th width="200px">歌手</th>
+                        <th width="200px">专辑</th>
+                    </tr>
+                </thead>
+                <tbody id="tb">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function btn() {
+            let tb = document.getElementById('tb');
+            tb.innerHTML = ''
+            var x = document.getElementById('name').value;
+            url = `http://musicapi.leanapp.cn/search?keywords= ${x}`
+            console.log(url);
+            const xhr = new XMLHttpRequest()
+            xhr.open("get", url, true)
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status = 200) {
+                        let res = JSON.parse(xhr.responseText)
+                        for (let i = 0; i <= res.result.songs.length - 1; i++) {
+                            myname = res.result.songs[i].name;
+                            artname = res.result.songs[i].artists[0].name;
+                            albname = res.result.songs[i].album.name;
+                            tb.innerHTML += `<tr>
+                                        <td>${myname}</td>
+                                        <td>${artname}</td>
+                                        <td>${albname}</td>
+                                        </tr>`
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+
+</html>

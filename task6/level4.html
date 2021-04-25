@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function request(obj) {
+
+            const {
+                method,
+                url,
+                data,
+                header
+            } = obj || {};
+
+            return new Promise(async (resolve, rejects) => {
+
+                let HttpRequest = null;
+                if (window.fetch) {
+
+                    const response = await fetch(url, {
+                        method: method,
+                        body: method.toLocaleUpperCase() === 'post' ? j(data) : null,
+                        headers: header || {}
+                    });
+                    if (response.status == 200) {
+
+                        const result = await response.text();
+                        resolve(result);
+                    } else {
+                        rejects(response);
+                    }
+
+                } else {
+                    if (window.XMLHttpRequest) {
+                        HttpRequest = new XMLHttpRequest();
+                    } else {
+                        HttpRequest = new ActiveXObject('Microsoft.XMLHTTP');
+                    }
+
+                    if (HttpRequest) {
+
+                        HttpRequest.open(method || 'get', url, true);
+
+                        HttpRequest.onreadystatechange = (e) => {
+                            if (e.currentTarget.readyState === 4) {
+                                if (e.currentTarget.status === 200) {
+                                    resolve(e.currentTarget.response);
+                                } else {
+                                    rejects(e.currentTarget.response);
+                                }
+                            }
+                        }
+                        header ? HttpRequest.setRequestHeader(
+                            ...Object.keys(header),
+                            ...Object.values(header)
+                        ) : void(0);
+                        HttpRequest.send(j(data));
+
+                    } else {
+                        rejects('此浏览器不支持ajax');
+                    }
+                }
+            })
+        }
+
+
+        request({
+            method: 'get',
+            url: 'http://musicapi.leanapp.cn/personalized?limit=2',
+        }).then(res => {
+            console.log('数据返回', res);
+        }).catch(err => {
+            console.log('错误信息', err);
+        })
+    </script>
+</body>
+
+</html>
